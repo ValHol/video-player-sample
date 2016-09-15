@@ -10,7 +10,7 @@ export default class CategoriesScene extends Component {
 
   static propTypes = {
       dataSource: PropTypes.array.isRequired,
-      navigation: PropTypes.object.isRequired
+      selectCategory: PropTypes.func.isRequired
   };
 
   constructor (props) {
@@ -19,15 +19,6 @@ export default class CategoriesScene extends Component {
     this.state = {
       dataSource: ds.cloneWithRows(this.props.dataSource)
     }
-    this._onCategorySelected = this._onCategorySelected.bind(this)
-  }
-
-  _onCategorySelected (title, rowId) {
-    this.props.navigation.push({
-      title: title,
-      index: 1,
-      rowid: rowId
-    })
   }
 
   render () {
@@ -38,7 +29,7 @@ export default class CategoriesScene extends Component {
               renderRow={(rowData, sectionID, rowID, highlightRow) =>
                     <TouchableHighlight style={styles.row}
                       activeOpacity={1.0}
-                      onPress={() => this._onCategorySelected(rowData.title, rowID)}>
+                      onPress={() => this.props.selectCategory(rowData.title, rowID)}>
                         <View style={styles.rowImage}>
                             <Image source={{uri: 'http://lorempixel.com/300/120/abstract/' + (rowData.index + 3)}}
                                    style={styles.rowImage} />

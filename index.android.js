@@ -51,6 +51,15 @@ class VideoPlayerSample extends Component {
     BackAndroid.addEventListener.bind(this)
     this._renderScene = this._renderScene.bind(this)
     this.selectCourse = this.selectCourse.bind(this)
+    this.selectCategory = this.selectCategory.bind(this)
+  }
+
+  selectCategory (title, rowId) {
+    this.refs.navigator.push({
+      title: title,
+      index: 1,
+      rowid: rowId
+    })
   }
 
   selectCourse(course) {
@@ -82,7 +91,7 @@ class VideoPlayerSample extends Component {
       default:
         return (
           <CategoriesScene
-            navigation={navigator}
+            selectCategory={this.selectCategory}
             dataSource={categories} />
         )
     }
