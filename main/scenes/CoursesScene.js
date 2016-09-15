@@ -14,9 +14,8 @@ const urlArray = [
 export default class CoursesScene extends Component {
 
   static propTypes = {
-      categoryTitle: PropTypes.string.isRequired,
-      courseList: PropTypes.array.isRequired,
-      navigation: PropTypes.object.isRequired
+      navigation: PropTypes.object.isRequired,
+      category: PropTypes.object.isRequired
   }
 
   constructor (props) {
@@ -24,7 +23,7 @@ export default class CoursesScene extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
     this.state = {
-      dataSource: ds.cloneWithRows(this.props.courseList)
+      dataSource: ds.cloneWithRows(this.props.category.courses)
     }
 
     this._onCourseSelected = this._onCourseSelected.bind(this)

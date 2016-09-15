@@ -63,8 +63,7 @@ class VideoPlayerSample extends Component {
         return (
           <CoursesScene
             navigation={navigator}
-            courseList={categories[route.rowid].courses}
-            categoryTitle={categories[route.rowid].title} />
+            category={categories[route.rowid]} />
         )
       case 0:
       default:
