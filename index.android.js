@@ -70,7 +70,6 @@ class VideoPlayerSample extends Component {
       case 2:
         return (
           <VideoScene
-            navigation={navigator}
             course={route.course} />
         )
       case 1:

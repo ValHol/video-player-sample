@@ -30,7 +30,6 @@ export default class VideoScene extends Component {
 
   static propTypes = {
     course: PropTypes.object.isRequired,
-    navigation: PropTypes.object.isRequired
   }
 
   constructor (props) {
