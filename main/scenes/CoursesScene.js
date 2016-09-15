@@ -25,26 +25,31 @@ export default class CoursesScene extends Component {
     this.state = {
       dataSource: ds.cloneWithRows(this.props.category.courses)
     }
+
+    this._renderRow = this._renderRow.bind(this)
   }
 
-  // TODO Add renderRow or RowComponent
+  _renderRow (rowData, sectionID, rowID, highlightRow) {
+    return (
+      <TouchableHighlight style={styles.row}
+                          activeOpacity={1.0}
+                          onPress={() => this.props.selectCourse(rowData)}>
+        <View style={styles.rowImage}>
+          <Image source={{uri: 'http://lorempixel.com/300/120/cats/' + (parseInt(rowID))}} style={styles.rowImage} />
+          <Text style={styles.text}>
+            {rowData.title.toUpperCase()}
+          </Text>
+        </View>
+      </TouchableHighlight>
+    )
+  }
+
   render () {
     return (
             <ListView
               dataSource={this.state.dataSource}
               style={styles.list}
-              renderRow={(rowData, sectionID, rowID, highlightRow) =>
-                    <TouchableHighlight style={styles.row}
-                      activeOpacity={1.0}
-                      onPress={() => this.props.selectCourse(rowData)}>
-                        <View style={styles.rowImage}>
-                            <Image source={{uri: 'http://lorempixel.com/300/120/cats/' + (parseInt(rowID))}} style={styles.rowImage} />
-                            <Text style={styles.text}>
-                                {rowData.title.toUpperCase()}
-                            </Text>
-                        </View>
-                    </TouchableHighlight>
-                }
+              renderRow={this._renderRow}
             />
         )
   }
