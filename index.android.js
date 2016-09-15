@@ -10,6 +10,10 @@ import CoursesScene from './main/scenes/CoursesScene'
 import VideoScene from './main/scenes/VideoScene'
 
 const categories = require('./main/mock/mock.json')
+const urlArray = [
+  'http://movietrailers.apple.com/movies/independent/snowden/snowden-tlr3_i320.m4v',
+  'http://movietrailers.apple.com/movies/weinstein/gold/gold-trailer-1_i320.m4v'
+]
 
 class VideoPlayerSample extends Component {
 
@@ -46,6 +50,16 @@ class VideoPlayerSample extends Component {
     )
     BackAndroid.addEventListener.bind(this)
     this._renderScene = this._renderScene.bind(this)
+    this.selectCourse = this.selectCourse.bind(this)
+  }
+
+  selectCourse(course) {
+    course.url = urlArray[Math.floor(Math.random() * urlArray.length)]
+    this.refs.navigator.push({
+      title: course.title,
+      index: 2,
+      course: course
+    })
   }
 
   _renderScene (route, navigator) {
@@ -62,8 +76,8 @@ class VideoPlayerSample extends Component {
       case 1:
         return (
           <CoursesScene
-            navigation={navigator}
-            category={categories[route.rowid]} />
+            category={categories[route.rowid]}
+            selectCourse={this.selectCourse}/>
         )
       case 0:
       default:
@@ -78,6 +92,7 @@ class VideoPlayerSample extends Component {
   render () {
     return (
             <Navigator
+              ref="navigator"
               initialRoute={this.routes[0]}
               renderScene={this._renderScene}
             />

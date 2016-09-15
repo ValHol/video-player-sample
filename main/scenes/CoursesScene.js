@@ -14,8 +14,8 @@ const urlArray = [
 export default class CoursesScene extends Component {
 
   static propTypes = {
-      navigation: PropTypes.object.isRequired,
-      category: PropTypes.object.isRequired
+      category: PropTypes.object.isRequired,
+      selectCourse: PropTypes.func.isRequired
   }
 
   constructor (props) {
@@ -25,18 +25,6 @@ export default class CoursesScene extends Component {
     this.state = {
       dataSource: ds.cloneWithRows(this.props.category.courses)
     }
-
-    this._onCourseSelected = this._onCourseSelected.bind(this)
-  }
-
-  _onCourseSelected (course) {
-    // Select a random URL from the array for testing purposes
-    course.url = urlArray[Math.floor(Math.random() * urlArray.length)]
-    this.props.navigation.push({
-      title: course.title,
-      index: 2,
-      course: course
-    })
   }
 
   // TODO Add renderRow or RowComponent
@@ -48,7 +36,7 @@ export default class CoursesScene extends Component {
               renderRow={(rowData, sectionID, rowID, highlightRow) =>
                     <TouchableHighlight style={styles.row}
                       activeOpacity={1.0}
-                      onPress={() => this._onCourseSelected(rowData)}>
+                      onPress={() => this.props.selectCourse(rowData)}>
                         <View style={styles.rowImage}>
                             <Image source={{uri: 'http://lorempixel.com/300/120/cats/' + (parseInt(rowID))}} style={styles.rowImage} />
                             <Text style={styles.text}>
