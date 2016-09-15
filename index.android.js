@@ -3,8 +3,8 @@
  * @flow
  */
 
-import React, {Component} from 'react'
-import {AppRegistry, StyleSheet, Navigator, BackAndroid, View, Image} from 'react-native'
+import React, { Component } from 'react'
+import { AppRegistry, Navigator, BackAndroid } from 'react-native'
 import CategoriesScene from './main/scenes/CategoriesScene'
 import CoursesScene from './main/scenes/CoursesScene'
 import VideoScene from './main/scenes/VideoScene'
@@ -45,40 +45,42 @@ class VideoPlayerSample extends Component {
       }
     )
     BackAndroid.addEventListener.bind(this)
+    this._renderScene = this._renderScene.bind(this)
+  }
+
+  _renderScene (route, navigator) {
+    this.state.currentScene = route
+    this.mainNavigator = navigator
+
+    switch (route.index) {
+      case 2:
+        return (
+          <VideoScene
+            navigation={navigator}
+            course={route.course} />
+        )
+      case 1:
+        return (
+          <CoursesScene
+            navigation={navigator}
+            courseList={categories[route.rowid].courses}
+            categoryTitle={categories[route.rowid].title} />
+        )
+      case 0:
+      default:
+        return (
+          <CategoriesScene
+            navigation={navigator}
+            dataSource={categories} />
+        )
+    }
   }
 
   render () {
     return (
             <Navigator
               initialRoute={this.routes[0]}
-              renderScene={(route, navigator) => {
-                this.state.currentScene = route
-                this.mainNavigator = navigator
-
-                switch (route.index) {
-                  case 2:
-                    return (
-                      <VideoScene
-                        navigation={navigator}
-                        course={route.course} />
-                    )
-                  case 1:
-                    return (
-                      <CoursesScene
-                        navigation={navigator}
-                        courseList={categories[route.rowid].courses}
-                        categoryTitle={categories[route.rowid].title} />
-                    )
-                  case 0:
-                  default:
-                    return (
-                      <CategoriesScene
-                        navigation={navigator}
-                        dataSource={categories} />
-                    )
-                }
-               }
-              }
+              renderScene={this._renderScene}
             />
         )
   }
