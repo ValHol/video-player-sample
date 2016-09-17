@@ -128,12 +128,17 @@ export default class VideoScene extends Component {
 
   }
 
+  _onOrientationChange () {
+
+  }
+
   _onLayout (event) {
     let portraitMode = event.nativeEvent.layout.height > event.nativeEvent.layout.width
     if (portraitMode === this.state.portraitMode) return
     this.setState({
       portraitMode: portraitMode
     })
+    this._onOrientationChange()
   }
 
   /**
@@ -141,17 +146,17 @@ export default class VideoScene extends Component {
    */
 
   // TODO Make control component
-  renderControlContainer () {
+  _renderControlContainer () {
     return (
       <View style={styles.controlContainer}>
-        {this.renderControlButton(this._onVideoPressed, this.state.paused ? Icons.PLAY : Icons.PAUSE)}
-        {this.renderControlButton(this._onFullScreenPressed, this.state.fullScreen ? Icons.FULL_SCREEN_EXIT : Icons.FULL_SCREEN)}
-        {this.renderControlButton(this._onVolumePressed, this.state.muted ? Icons.MUTE : Icons.VOLUME)}
+        {this._renderControlButton(this._onVideoPressed, this.state.paused ? Icons.PLAY : Icons.PAUSE)}
+        {this._renderControlButton(this._onFullScreenPressed, this.state.fullScreen ? Icons.FULL_SCREEN_EXIT : Icons.FULL_SCREEN)}
+        {this._renderControlButton(this._onVolumePressed, this.state.muted ? Icons.MUTE : Icons.VOLUME)}
       </View>
     )
   }
 
-  renderControlButton (callback, icon) {
+  _renderControlButton (callback, icon) {
     return (
       <TouchableOpacity onPress={() => {
         if (callback !== null) callback()
@@ -163,12 +168,14 @@ export default class VideoScene extends Component {
   }
 
   // TODO Make video component with control
-  renderVideo () {
+  _renderVideo () {
     return (
       <View style={this.state.fullScreen ? styles.videoFullScreen : styles.videoContainer}>
         <TouchableOpacity style={this.state.fullScreen ? styles.videoFullScreen : styles.video}
-          onPress={() => { this._onVideoPressed() }}>
-          <Video source={{ uri: this.props.course.url }}
+                          onPress={() => { this._onVideoPressed() }}>
+          <Video
+            key={this.state.portraitMode}
+            source={{ uri: this.props.course.url }}
             rate={this.state.rate}
             volume={this.state.volume}
             muted={this.state.muted}
@@ -194,47 +201,54 @@ export default class VideoScene extends Component {
   }
 
   // TODO Animate to full screen
-  renderFullScreen () {
+  _renderFullScreen () {
     return (
-      <View style={[ styles.videoFullScreen, { backgroundColor: Colors.BLACK } ]}>
-        { this.renderVideo() }
-        <View style={styles.fsLowerContainer}>
-          <View style={styles.progress}>
-            <Animated.View style={[ styles.innerProgressCompleted, { flex: this.state.currentPercentage } ]} />
-            <Animated.View style={[ styles.innerProgressRemaining, { flex: this.state.remainingPercentage } ]} />
-          </View>
-          {this.renderControlContainer()}
-        </View>
+      <View style={[ styles.videoFullScreen, { backgroundColor: Colors.BLACK } ]}
+            onLayout={(event) => this._onLayout(event)}>
+        { this._renderVideo() }
+        { this._renderTransport() }
       </View>
     )
   }
 
-  renderScreen () {
+  _renderTransport () {
+    return (
+      <View style={this.state.fullScreen ? styles.fsLowerContainer : styles.lowerBarContainer}>
+        <View style={styles.progress}>
+          <Animated.View style={[ styles.innerProgressCompleted, { flex: this.state.currentPercentage } ]}/>
+          <Animated.View style={[ styles.innerProgressRemaining, { flex: this.state.remainingPercentage } ]}/>
+        </View>
+        { this._renderControlContainer() }
+      </View>
+    )
+  }
+
+  _renderBody () {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.videoTitle}>
+          { this.props.course.title }
+        </Text>
+        <Text style={styles.videoBody}>
+          { this.props.course.description }
+        </Text>
+      </View>
+    )
+  }
+
+  _renderScreen () {
     return (
       <ScrollView style={styles.mainContainer}
-        onLayout={(event) => this._onLayout(event)}>
-        { this.state.fullScreen ? null : this.renderVideo() }
-        <View style={styles.lowerBarContainer}>
-          <View style={styles.progress}>
-            <Animated.View style={[ styles.innerProgressCompleted, { flex: this.state.currentPercentage } ]} />
-            <Animated.View style={[ styles.innerProgressRemaining, { flex: this.state.remainingPercentage } ]} />
-          </View>
-          { this.renderControlContainer() }
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.videoTitle}>
-            { this.props.course.title }
-          </Text>
-          <Text style={styles.videoBody}>
-            { this.props.course.description }
-          </Text>
-        </View>
+                  onLayout={(event) => this._onLayout(event)}>
+        { this._renderVideo() }
+        { this._renderTransport() }
+        { this._renderBody()}
       </ScrollView>
     )
   }
 
   render () {
-    return this.state.fullScreen ? this.renderFullScreen() : this.renderScreen()
+    return this.state.fullScreen ? this._renderFullScreen() : this._renderScreen()
   }
 }
 
